@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>库房管理</title>
+  <link rel="stylesheet" href="./iconfont/iconfont.css">
+  <link rel="stylesheet" href="css/index.css" />
+</head>
+
+<body>
+  <h1>库房物资管理登记表</h1>
+  <form class="info" autocomplete="off">
+    <input type="text" class="tool" name="tool" placeholder="借用工具名称" />
+    <input type="text" class="num" name="num" placeholder="借用数量" />
+    <input type="text" class="uname" name="name" placeholder="借用人姓名" />
+    <input type="text" class="phone" name="phone" placeholder="借用人手机号" />
+   
+    <button class="add">
+      <i class="iconfont icon-tianjia"></i>登记
+    </button>
+  </form>
+
+  <div class="title">共有数据<span>0</span>条</div>
+  <table>
+    <thead>
+      <tr>
+        <th>序号</th>
+        <th>借用工具名称</th>
+        <th>借用数量</th>
+        <th>借用人姓名</th>
+        <th>借用人手机号</th>
+        <th>借用时间</th>
+        <th>归还时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- <tr>
+        <td>1</td>
+        <td>锤子</td>
+        <td>何毅</td>
+        <td>13389976971</td>
+        <td>2023-07-01 08：00：00</td>
+        <td>
+          <a href="javascript:">
+            <i class="iconfont icon-shanchu"></i>
+            删除
+          </a>
+        </td>
+      </tr> -->
+    </tbody>
+  </table>
+  <script>
+    // 准备的数据
+    const initData = [{
+      id: 1,
+      tool: '锤子',
+      name: '何毅',
+      phone: '13389976971',
+      time: '2023-08-01 13:48:00'
+    }]
+    // localStorage.setItem('data', JSON.stringify(initData))
+    const arr = JSON.parse(localStorage.getItem('data')) || []
+    const tbody = document.querySelector('tbody')
+    
+    // 渲染业务
+    function render(){
+      const new_arr = arr.map(function(ele,index){
+        if (ele.deleted) {
+      // 如果数据被删除，添加删除线并显示删除时间
+      return `
+        <tr style="text-decoration: line-through;">
+          <td>${ele.id}</td>
+          <td>${ele.tool}</td>
+          <td>${ele.num}</td>
+          <td>${ele.name}</td>
+          <td>${ele.phone}</td>
+          <td>${ele.time}</td>
+          <td>${ele.deleteTime}</td>
+          <td>
+            <a href="javascript:" data-id="${index}">
+              <i class="iconfont icon-shanchu"></i>
+              归还
+            </a>
+          </td>
+        </tr>
+      `;
+    } else {
+      // 数据未被删除，不添加删除线
+      return `
+        <tr>
+          <td>${ele.id}</td>
+          <td>${ele.tool}</td>
+          <td>${ele.num}</td>
+          <td>${ele.name}</td>
+          <td>${ele.phone}</td>
+          <td>${ele.time}</td>
+          <td> </td>
+          <td>
+            <a href="javascript:" data-id="${index}">
+              <i class="iconfont icon-shanchu"></i>
+              归还
+            </a>
+          </td>
+        </tr>
+      `;
+    }
+      })
+      tbody.innerHTML = new_arr.join('')
+      document.querySelector('.title span').innerHTML = arr.length
+    }
+    render()
+    
+    // 新增业务
+    info = document.querySelector('.info')
+    tool = document.querySelector('.tool')
+    num = document.querySelector('.num')
+    uname = document.querySelector('.uname')
+    phone = document.querySelector('.phone')
+    info.addEventListener('submit',function(e){
+      e.preventDefault()
+      if(!tool.value||!uname.value||!phone.value){
+        return alert('输入内容不能为空！')
+      } 
+      arr.push({
+      id: arr.length+1,
+      tool: tool.value,
+      num: num.value,
+      name: uname.value,
+      phone: phone.value,
+      time: new Date().toLocaleString(),
+      deleted: false,
+      deleteTime: null
+      })
+      render()
+      this.reset()
+      localStorage.setItem('data', JSON.stringify(arr))
+    })
+    
+    // 归还业务
+    
+    tbody.addEventListener('click',function(e){
+      if(e.target.tagName === 'A'){
+        if(confirm('你确定已经归还了吗？')){
+          console.log(11);
+          let index = e.target.dataset.id
+          arr[index].deleted = true;
+          arr[index].deleteTime = new Date().toLocaleString();
+          localStorage.setItem('data', JSON.stringify(arr))
+          render()
+        }
+      }
+      
+    })
+    
+  </script>
+</body>
+
+</html>
