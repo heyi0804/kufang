@@ -1,4 +1,4 @@
-data {
+{
   "fruits": [
     "apple",
     "banana",
@@ -7,4 +7,5 @@ data {
     "watermelon"
   ]
 }
+
 
